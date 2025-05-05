@@ -4,6 +4,9 @@ using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
+/// <summary>
+/// A Base Class for the Window that supports OpenGL
+/// </summary>
 public class Window
 {
     // Windowing Components
@@ -19,6 +22,14 @@ public class Window
     private bool m_VSync = false;
     private bool m_Fullscreen = false;
 
+    /// <summary>
+    /// A Base Class for the Window that supports OpenGL
+    /// </summary>
+    /// <param name="width">: The Width of the Window</param>
+    /// <param name="height">: The Height of the Window</param>
+    /// <param name="title">: The Title of the Window (OPTIONAL)</param>
+    /// <param name="vsync">: VSync? (OPTIONAL)</param>
+    /// <param name="fullscreen">: Fullscreen (OPTIONAL)</param>
     public Window(int width, int height, string title = "Default Title", bool vsync = false, bool fullscreen = false)
     {
         m_Width = width;
@@ -58,6 +69,9 @@ public class Window
         m_Window.VSync = vsync ? VSyncMode.Off : VSyncMode.On;
     }
 
+    /// <summary>
+    /// Starts the Window.
+    /// </summary>
     public void Run()
     {
         m_Window.Load += OnLoad;
@@ -74,7 +88,7 @@ public class Window
     {
         m_Window.IsVisible = true;
         Console.WriteLine("Window has been loaded.");
-        Console.WriteLine($"Window Information:\nWidth: {m_Width}\nHeight: {m_Height}\nVSync: {m_VSync}\n");
+        Console.WriteLine($"Window Information:\nWidth: {m_Width}\nHeight: {m_Height}\nVSync: {m_VSync}\n\nOpenGL Information: \nVendor: {GL.GetString(StringName.Vendor)}\nOpenGL Version: {GL.GetString(StringName.Version)}\nGLSL Version: {GL.GetString(StringName.ShadingLanguageVersion)}");
     }
 
     private void OnUnload()
@@ -111,16 +125,28 @@ public class Window
 
     // Public Methods
     
+    /// <summary>
+    /// Closes the Window on call.
+    /// </summary>
     public void Close()
     {
         m_Window.Close();
     }
 
+    /// <summary>
+    /// Sets a Title for the Window.
+    /// </summary>
+    /// <param name="newTitle">: Title for the Window.</param>
     public void SetTitle(string newTitle)
     {
         m_Window.Title = newTitle;
     }
 
+    /// <summary>
+    /// Sets a Size for the Window.
+    /// </summary>
+    /// <param name="width">: Width of the Window.</param>
+    /// <param name="height">: Height of the Window.</param>
     public void SetSize(int width, int height)
     {
         m_Window.ClientSize = new Vector2i(width, height);
@@ -128,6 +154,9 @@ public class Window
 
     // Getters
 
+    /// <summary>
+    /// Gets the aspect ratio.
+    /// </summary>
     public float AspectRatio
     {
         get
@@ -136,6 +165,9 @@ public class Window
         }
     }
 
+    /// <summary>
+    /// Checks whether the window is running.
+    /// </summary>
     public bool IsRunning
     {
         get
@@ -144,6 +176,9 @@ public class Window
         }
     }
 
+    /// <summary>
+    /// Gets the Keyboard of the window.
+    /// </summary>
     public KeyboardState Keyboard
     {
         get
