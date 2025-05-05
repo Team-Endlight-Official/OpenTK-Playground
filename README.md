@@ -1,4 +1,4 @@
-# OpenTK Attempt 1
+# OpenTK Playground
 
 Greetings fellow dev. This is my OpenTK playground, a place where i write stuff with C# and share them with you so you can use them or something.
 If i get on a good progress, i might make a full fledged engine out of it :)
