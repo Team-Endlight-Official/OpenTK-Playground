@@ -15,3 +15,5 @@ If i get on a good progress, i might make a full fledged engine out of it :)
 A first mesh was born. His name is Billy the Triangle.
 
 # Day 1 - 5/6/2025 | Part 2.
+![image](https://github.com/user-attachments/assets/4d67f694-6b05-4308-9848-67c55113fd33)
+Billy grew up quickly and became a somewhat Square.
