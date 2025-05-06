@@ -7,9 +7,9 @@ If i get on a good progress, i might make a full fledged engine out of it :)
 - OpenTK (The Best C# Wrapper for OpenGL, OpenAL and OpenCL)
 - StbiSharp (C# Wrapper for the Stbi Image library - might change it for a C# Wrapped FreeImage library in the future)
 
-# Day 0
+# Day 0 - 5/5/2025
 ![image](https://github.com/user-attachments/assets/6825fd08-b574-4b2e-aa4c-d84908fb5c48)
 
-# Day 1
+# Day 1 - 5/6/2025
 ![image](https://github.com/user-attachments/assets/aa3b1863-fdb6-4c36-acbb-eeccc5d0e984)
 A first mesh was born. His name is Billy the Triangle.
