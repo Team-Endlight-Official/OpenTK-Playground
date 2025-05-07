@@ -91,6 +91,7 @@ public class Window
         else Utils.Log("No Window Activity has been defined.\n\n", ConsoleColor.Red);
 
         m_window.IsVisible = true;
+        m_window.CenterWindow();
         Utils.Log("Window has been loaded.");
         Utils.Log($"Window Information:\nWidth: {m_width}\nHeight: {m_height}\nVSync: {m_vsync}\n\nOpenGL Information: \nVendor: {GL.GetString(StringName.Vendor)}\nOpenGL Version: {GL.GetString(StringName.Version)}\nGLSL Version: {GL.GetString(StringName.ShadingLanguageVersion)}", ConsoleColor.Yellow);
     }
@@ -111,7 +112,7 @@ public class Window
 
     private void OnRender(FrameEventArgs args)
     {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 
         if (m_windowActivity != null) m_windowActivity.ActivityRender(args.Time);
