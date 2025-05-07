@@ -61,7 +61,8 @@ public class TestActivity : IWindowActivity
     Shader? m_defaultShader;
 
     readonly float m_fov = MathHelper.DegreesToRadians(45f);
-    Matrix4 model, view, proj, mvp;
+    Matrix4 view, proj, mvp;
+    Transform t;
     int m_mvpLoc;
     float m_time = 0;
 
@@ -101,6 +102,9 @@ public class TestActivity : IWindowActivity
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(1);
 
+        t = new Transform(new Vector3(0f, 0f, -3f));
+        t.Scale = new Vector3(0.5f, 1f, 0.1f);
+
         Utils.Log("Test Activity has been Loaded.\n");
     }
 
@@ -108,15 +112,11 @@ public class TestActivity : IWindowActivity
     {
         m_time += 25f * (float)time;
 
-        model = Matrix4.Identity * 
-            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(1 * m_time)) *
-            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(2 * m_time)) *
-            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(3 * m_time)) *
-            Matrix4.CreateTranslation(0f, 0f, -3f);
+        t.Rotation += new Vector3(1f * m_time, 2f * m_time, 3f * m_time);
         view = Matrix4.LookAt(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, -1f), new Vector3(0f, 1f, 0f));
         proj = Matrix4.CreatePerspectiveFieldOfView(m_fov, m_window.AspectRatio, 0.1f, 100f);
 
-        mvp = model * view * proj;
+        mvp = t.Model * view * proj;
     }
 
     public void ActivityRender(double time)

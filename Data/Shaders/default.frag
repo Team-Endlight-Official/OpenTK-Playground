@@ -8,5 +8,5 @@ out vec4 OUT;
 
 void main()
 {
-	OUT = vec4(_POS.x + 0.5, _POS.y + 0.5, _POS.z + 0.5, 0.5);
+	OUT = vec4(_POS.x + 0.5, _POS.y + 0.5, _POS.z + 0.5, 1.0);
 }
