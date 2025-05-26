@@ -30,3 +30,7 @@ Might also explain why i had such trouble making MVP calculations in my previous
 # Day 3 - 5/7/2025 | Part 2.
 ![image](https://github.com/user-attachments/assets/368e64a1-18e3-4288-8dba-f1e32389dce8)
 Billy became a ghostly thin rectangular shape temporarily. I created a basic Transform struct that hold the Positon, Rotation (in euler angles) and Scale. The Transform component calculates the model matrix by a getter making it a simple to approach for the MVP calculation. Later on, we will get moving and get in control with the camera.
+
+# Big Stutter | PC Reset
+Hello fellow devs. It's been a time since i posted on this repo. The thing was that i reset my PC due to bad performance. Now, i am back at it again.
+![image](https://github.com/user-attachments/assets/2edd3d26-6c6d-4817-98fe-dfc8430d91bf)
