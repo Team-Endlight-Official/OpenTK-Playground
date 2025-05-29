@@ -1,77 +1,26 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.Common;
 
-public class TestActivity : IWindowActivity
+public class TestActivity : WindowActivity
 {
-    readonly Window m_window;
-
     // Testing Triangle
-    readonly float[] m_vertices = new float[24]
-    {
-        // front face
-        -0.5f, -0.5f, 0.5f, // Left Bottom 0
-        -0.5f, 0.5f, 0.5f,  // Left Top 1
-        0.5f, 0.5f, 0.5f,   // Right Top 2
-        0.5f, -0.5f, 0.5f,  // Right Bottom 3
-
-        // back face
-        -0.5f, -0.5f, -0.5f, // Left Bottom 4
-        -0.5f, 0.5f, -0.5f,  // Left Top 5
-        0.5f, 0.5f, -0.5f,   // Right Top 6
-        0.5f, -0.5f, -0.5f   // Right Bottom 7
-    };
-
-    readonly uint[] m_indices = new uint[36]
-    {
-        // Front face
-        0, 1, 2,
-        2, 3, 0,
-
-        // Back face
-        7, 6, 5,
-        5, 4, 7,
-
-        // Top face
-        1, 5, 6,
-        6, 2, 1,
-
-        // Bottom face
-        7, 4, 0,
-        0, 3, 7,
-
-        // Left face
-        4, 5, 1,
-        1, 0, 4,
-
-        // Right face
-        3, 2, 6,
-        6, 7, 3
-    };
-
-    readonly float[] m_uvCoords = new float[8]
-    {
-        // Front Face
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f
-    };
-
     int m_vao = -1, m_vbo = -1, m_ibo = -1, m_uvcb = -1;
     Shader? m_defaultShader;
 
     readonly float m_fov = MathHelper.DegreesToRadians(45f);
     Matrix4 view, proj, mvp;
     Transform t;
+    Transform other;
     int m_mvpLoc;
     float m_time = 0;
 
-    public TestActivity(Window window)
+    public TestActivity(Window context) : base(context)
     {
-        m_window = window;
+        
     }
 
-    public void ActivityLoad()
+    public override void Load()
     {
         // Shader Creation
         m_defaultShader = new Shader("default");
@@ -84,12 +33,12 @@ public class TestActivity : IWindowActivity
         // Vertex Positions
         m_vbo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, m_vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, m_vertices.Length * sizeof(float), m_vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, CubeData.Vertices.Length * sizeof(float), CubeData.Vertices, BufferUsageHint.StaticDraw);
 
         // Indexed Positions
         m_ibo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_ibo);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, m_indices.Length * sizeof(uint), m_indices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, CubeData.Indices.Length * sizeof(uint), CubeData.Indices, BufferUsageHint.StaticDraw);
 
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(0);
@@ -97,29 +46,31 @@ public class TestActivity : IWindowActivity
         // Testing up UV's
         m_uvcb = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, m_uvcb);
-        GL.BufferData(BufferTarget.ArrayBuffer, m_uvCoords.Length * sizeof(float), m_uvCoords, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, CubeData.UVCoords.Length * sizeof(float), CubeData.UVCoords, BufferUsageHint.StaticDraw);
 
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(1);
 
-        t = new Transform(new Vector3(0f, 0f, -3f));
-        t.Scale = new Vector3(0.5f, 1f, 0.1f);
+        t = new Transform(new Vector3(1f, 0f, -5f));
+        t.Scale = new Vector3(1f, 1f, 1f);
+
+        other = new Transform(new Vector3(0f, 0f, -5f));
 
         Utils.Log("Test Activity has been Loaded.\n");
     }
 
-    public void ActivityUpdate(double time)
+    public override void Update(FrameEventArgs args)
     {
-        m_time += 25f * (float)time;
+        m_time += 25f * (float)args.Time;
 
-        t.Rotation += new Vector3(1f * m_time, 2f * m_time, 3f * m_time);
+        other.Rotation += new Vector3(0, 2f * m_time, 0);
         view = Matrix4.LookAt(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, -1f), new Vector3(0f, 1f, 0f));
-        proj = Matrix4.CreatePerspectiveFieldOfView(m_fov, m_window.AspectRatio, 0.1f, 100f);
+        proj = Matrix4.CreatePerspectiveFieldOfView(m_fov, AspectRatio, 0.1f, 100f);
 
-        mvp = t.Model * view * proj;
+        mvp = (t.Model * (other.Model * view * proj));
     }
 
-    public void ActivityRender(double time)
+    public override void Render(FrameEventArgs args)
     {
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.CullFace);
@@ -134,10 +85,10 @@ public class TestActivity : IWindowActivity
 
         m_defaultShader?.SetUniformMatrix4(m_mvpLoc, mvp, true);
 
-        GL.DrawElements(PrimitiveType.Triangles, m_indices.Length, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, CubeData.Indices.Length, DrawElementsType.UnsignedInt, 0);
     }
 
-    public void ActivityUnload()
+    public override void Unload()
     {
         GL.BindVertexArray(0);
         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

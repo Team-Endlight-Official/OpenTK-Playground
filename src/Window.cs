@@ -14,7 +14,7 @@ public class Window
     private GameWindowSettings m_gameWindowSettings;
     private NativeWindowSettings m_nativeWindowSettings;
 
-    private IWindowActivity m_windowActivity;
+    private WindowActivityHandler m_windowActivityHandler;
 
     // 
     private int m_width = 800;
@@ -69,6 +69,8 @@ public class Window
         // Window Creation
         m_window = new GameWindow(m_gameWindowSettings, m_nativeWindowSettings);
         m_window.VSync = vsync ? VSyncMode.Off : VSyncMode.On;
+
+        m_windowActivityHandler = new WindowActivityHandler();
     }
 
     /// <summary>
@@ -87,8 +89,7 @@ public class Window
 
     private void OnLoad()
     {
-        if (m_windowActivity != null) m_windowActivity.ActivityLoad();
-        else Utils.Log("No Window Activity has been defined.\n\n", ConsoleColor.Red);
+        m_windowActivityHandler.LoadActivity(new TestActivity(this));
 
         m_window.IsVisible = true;
         m_window.CenterWindow();
@@ -98,15 +99,15 @@ public class Window
 
     private void OnUnload()
     {
-        if (m_windowActivity != null) m_windowActivity.ActivityUnload();
+        m_windowActivityHandler.GetActivity.Unload();
 
         Console.WriteLine("Window has been closed.");
     }
 
     private void OnUpdate(FrameEventArgs args)
     {
-        if (m_windowActivity != null) m_windowActivity.ActivityUpdate(args.Time);
-        
+        m_windowActivityHandler.GetActivity.Update(args);
+
         if (Keyboard.IsKeyPressed(Keys.Escape)) Close();
     }
 
@@ -115,7 +116,7 @@ public class Window
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         GL.ClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 
-        if (m_windowActivity != null) m_windowActivity.ActivityRender(args.Time);
+        m_windowActivityHandler.GetActivity.Render(args);
 
         m_window.SwapBuffers();
     }
@@ -157,12 +158,14 @@ public class Window
     }
 
     /// <summary>
-    /// Sets your Windowing Activity. It's basically a "Game" logic for OpenTK to Comprehend.
+    /// Gets the window activity handler.
     /// </summary>
-    /// <param name="activity"></param>
-    public void SetWindowActivity(IWindowActivity activity)
+    public WindowActivityHandler WindowActivityHandler
     {
-        m_windowActivity = activity;
+        get
+        {
+            return m_windowActivityHandler;
+        }
     }
 
     // Getters

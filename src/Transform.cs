@@ -3,7 +3,7 @@
 /// <summary>
 /// Transform holds the MVP matrix and the Position, Rotation, Scale and World Space vectors.
 /// </summary>
-public struct Transform
+public class Transform
 {
     private Vector3 m_position;
     private Vector3 m_rotation;
@@ -34,7 +34,7 @@ public struct Transform
     {
         m_position = position;
         m_rotation = new Vector3(0f, 0f, 0f);
-        m_scale = new Vector3(1f, 1f, 1f);
+        m_scale = new Vector3(1.0f, 1.0f, 1.0f);
 
         m_model = Matrix4.Identity;
     }
@@ -94,11 +94,11 @@ public struct Transform
         get
         {
             m_model =
-                Matrix4.CreateScale(m_scale) *
-                Matrix4.CreateRotationX(m_rotation.X) *
-                Matrix4.CreateRotationY(m_rotation.Y) *
-                Matrix4.CreateRotationZ(m_rotation.Z) *
-                Matrix4.CreateTranslation(m_position);
+                Matrix4.CreateScale(Scale) *
+                Matrix4.CreateRotationX(Rotation.X) *
+                Matrix4.CreateRotationY(Rotation.Y) *
+                Matrix4.CreateRotationZ(Rotation.Z) *
+                Matrix4.CreateTranslation(Position);
             return m_model;
         }
     }

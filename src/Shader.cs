@@ -124,6 +124,9 @@ public class Shader : IDisposable
         GL.UniformMatrix4(loc, transpose, ref value);
     }
 
+    /// <summary>
+    /// Disposes the Shader. a MUST to prevent GPU resource leaking.
+    /// </summary>
     public void Dispose()
     {
         Dispose(true);
