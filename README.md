@@ -34,3 +34,7 @@ Billy became a ghostly thin rectangular shape temporarily. I created a basic Tra
 # Big Stutter | PC Reset
 Hello fellow devs. It's been a time since i posted on this repo. The thing was that i reset my PC due to bad performance. Now, i am back at it again.
 ![image](https://github.com/user-attachments/assets/2edd3d26-6c6d-4817-98fe-dfc8430d91bf)
+
+# Day 4 - 5/29/2025
+![image](https://github.com/user-attachments/assets/d62f950f-e7d7-417d-bc50-8321068eeba1)
+Billy's origin has been somehow tampered with as i was playing around and seeing how i could implement Transform parenting and deparenting like the Unity Engine does. Yet i have revamped the whole Window Activity class and added a Window Activity Handler which handles the current Window Activity that has been told to load and keep before removal and/or switching to a next Activity. Pretty convenient if you ask me. I also moved the Cube data into a separate class. In the future i will have a Mesh struct that can have custom vertex data or predefined data like the Cube for example. Next day i will implement the debug camera so we can around the scenery a little.
