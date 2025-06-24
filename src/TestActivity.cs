@@ -6,13 +6,11 @@ public class TestActivity : WindowActivity
 {
     // Testing Triangle
     int m_vao = -1, m_vbo = -1, m_ibo = -1, m_uvcb = -1;
-    Shader? m_defaultShader;
+    DefaultShader? m_defaultShader;
 
     readonly float m_fov = MathHelper.DegreesToRadians(45f);
-    Matrix4 view, proj, mvp;
+    Matrix4 view, proj;
     Transform t;
-    Transform other;
-    int m_mvpLoc;
     float m_time = 0;
 
     public TestActivity(Window context) : base(context)
@@ -23,8 +21,7 @@ public class TestActivity : WindowActivity
     public override void Load()
     {
         // Shader Creation
-        m_defaultShader = new Shader("default");
-        m_mvpLoc = m_defaultShader.GetUniformLocation("u_mvp");
+        m_defaultShader = new DefaultShader();
 
         // Create the final Composite of mesh data.
         m_vao = GL.GenVertexArray();
@@ -54,8 +51,6 @@ public class TestActivity : WindowActivity
         t = new Transform(new Vector3(1f, 0f, -5f));
         t.Scale = new Vector3(1f, 1f, 1f);
 
-        other = new Transform(new Vector3(0f, 0f, -5f));
-
         Utils.Log("Test Activity has been Loaded.\n");
     }
 
@@ -63,11 +58,8 @@ public class TestActivity : WindowActivity
     {
         m_time += 25f * (float)args.Time;
 
-        other.Rotation += new Vector3(0, 2f * m_time, 0);
         view = Matrix4.LookAt(new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, -1f), new Vector3(0f, 1f, 0f));
         proj = Matrix4.CreatePerspectiveFieldOfView(m_fov, AspectRatio, 0.1f, 100f);
-
-        mvp = (t.Model * (other.Model * view * proj));
     }
 
     public override void Render(FrameEventArgs args)
@@ -83,7 +75,9 @@ public class TestActivity : WindowActivity
         GL.BindVertexArray(m_vao);
         m_defaultShader?.Use();
 
-        m_defaultShader?.SetUniformMatrix4(m_mvpLoc, mvp, true);
+        m_defaultShader?.SetModel(t.Model);
+        m_defaultShader?.SetView(view);
+        m_defaultShader?.SetProjection(proj);
 
         GL.DrawElements(PrimitiveType.Triangles, CubeData.Indices.Length, DrawElementsType.UnsignedInt, 0);
     }

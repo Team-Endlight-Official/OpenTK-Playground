@@ -68,6 +68,8 @@ public class Shader : IDisposable
         GL.UseProgram(m_ID);
     }
 
+    public virtual void Update() { }
+
     /// <summary>
     /// Disables the Shader Program.
     /// </summary>

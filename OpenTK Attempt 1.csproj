@@ -12,11 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Assets\**" />
+    <EmbeddedResource Remove="Data\Assets\**" />
+    <None Remove="Data\Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Assets\" />
     <Folder Include="Data\Shaders\" />
   </ItemGroup>
 
