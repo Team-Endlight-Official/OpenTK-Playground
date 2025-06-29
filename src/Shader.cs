@@ -4,12 +4,12 @@ using OpenTK.Graphics.OpenGL;
 /// <summary>
 /// A Base class for Vertex and Fragment Shaders.
 /// </summary>
-public class Shader : IDisposable
+public abstract class Shader : IDisposable
 {
-    private int m_ID = 0;
-    private int m_V = 0, m_F = 0;
+    private int _ID = 0;
+    private int _V = 0, _F = 0;
 
-    private bool m_disposedValue = false;
+    private bool _disposedValue = false;
 
     /// <summary>
     /// A Base class for Vertex and Fragment Shaders.
@@ -22,25 +22,25 @@ public class Shader : IDisposable
         string fragmentCode = Utils.ReadFileContentsFromData($"Shaders/{shaderPath}.frag");
 
         // Vertex Shader
-        m_V = GL.CreateShader(ShaderType.VertexShader);
-        GL.ShaderSource(m_V, vertexCode);
-        GL.CompileShader(m_V);
+        _V = GL.CreateShader(ShaderType.VertexShader);
+        GL.ShaderSource(_V, vertexCode);
+        GL.CompileShader(_V);
 
         // Fragment Shader
-        m_F = GL.CreateShader(ShaderType.FragmentShader);
-        GL.ShaderSource(m_F, fragmentCode);
-        GL.CompileShader(m_F);
+        _F = GL.CreateShader(ShaderType.FragmentShader);
+        GL.ShaderSource(_F, fragmentCode);
+        GL.CompileShader(_F);
 
         // Create the Shader Program
-        m_ID = GL.CreateProgram();
-        GL.AttachShader(m_ID, m_V);
-        GL.AttachShader(m_ID, m_F);
-        GL.LinkProgram(m_ID);
+        _ID = GL.CreateProgram();
+        GL.AttachShader(_ID, _V);
+        GL.AttachShader(_ID, _F);
+        GL.LinkProgram(_ID);
     }
 
     ~Shader()
     {
-        if (!m_disposedValue)
+        if (!_disposedValue)
         {
             Utils.Log("Shader Err: GPU resource leak! You forgot to call the Dispose Method!", ConsoleColor.Red);
         }
@@ -48,32 +48,30 @@ public class Shader : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!m_disposedValue)
+        if (!_disposedValue)
         {
-            Unuse();
+            End();
 
-            GL.DeleteProgram(m_ID);
-            GL.DeleteShader(m_F);
-            GL.DeleteShader(m_V);
+            GL.DeleteProgram(_ID);
+            GL.DeleteShader(_F);
+            GL.DeleteShader(_V);
 
-            m_disposedValue = true;
+            _disposedValue = true;
         }
     }
 
     /// <summary>
     /// Enables the Shader Program.
     /// </summary>
-    public void Use()
+    public void Begin()
     {
-        GL.UseProgram(m_ID);
+        GL.UseProgram(_ID);
     }
-
-    public virtual void Update() { }
 
     /// <summary>
     /// Disables the Shader Program.
     /// </summary>
-    public void Unuse()
+    public void End()
     {
         GL.UseProgram(0);
     }
@@ -86,7 +84,7 @@ public class Shader : IDisposable
     /// <param name="name">: Uniform name in your GLSL codes.</param>
     public int GetUniformLocation(string name)
     {
-        int loc = GL.GetUniformLocation(m_ID, name);
+        int loc = GL.GetUniformLocation(_ID, name);
         if (loc == -1)
         {
             Utils.Log($"Shader Err: Uniform name of '{name}' does not exist.");

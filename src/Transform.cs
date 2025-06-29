@@ -1,29 +1,34 @@
 ﻿using OpenTK.Mathematics;
+using System.Data.SqlTypes;
 
 /// <summary>
 /// Transform holds the MVP matrix and the Position, Rotation, Scale and World Space vectors.
 /// </summary>
 public class Transform
 {
-    private Vector3 m_position;
-    private Vector3 m_rotation;
-    private Vector3 m_scale;
+    private Vector3 _position;
+    private Vector3 _rotation;
+    private Vector3 _scale;
+
+    public Vector3 Forward = -Vector3.UnitZ;
+    public Vector3 Right = Vector3.UnitX;
+    public Vector3 Up = Vector3.UnitY;
 
     public static readonly Vector4 LOCAL = new Vector4(0f, 0f, 0f, 0f);
     public static readonly Vector4 WORLD = new Vector4(0f, 0f, 0f, 1f);
 
-    private Matrix4 m_model;
+    private Matrix4 _model;
 
     /// <summary>
     /// Transform holds the MVP matrix and the Position, Rotation, Scale and World Space vectors.
     /// </summary>
     public Transform()
     {
-        m_position = new Vector3(0f, 0f, 0f);
-        m_rotation = new Vector3(0f, 0f, 0f);
-        m_scale = new Vector3(1f, 1f, 1f);
+        _position = new Vector3(0f, 0f, 0f);
+        _rotation = new Vector3(0f, 0f, 0f);
+        _scale = new Vector3(1f, 1f, 1f);
 
-        m_model = Matrix4.Identity;
+        _model = Matrix4.Identity;
     }
 
     /// <summary>
@@ -32,11 +37,11 @@ public class Transform
     /// <param name="position">: Position of your Transform.</param>
     public Transform(Vector3 position)
     {
-        m_position = position;
-        m_rotation = new Vector3(0f, 0f, 0f);
-        m_scale = new Vector3(1.0f, 1.0f, 1.0f);
+        _position = position;
+        _rotation = new Vector3(0f, 0f, 0f);
+        _scale = new Vector3(1.0f, 1.0f, 1.0f);
 
-        m_model = Matrix4.Identity;
+        _model = Matrix4.Identity;
     }
 
     /// <summary>
@@ -46,11 +51,11 @@ public class Transform
     {
         get
         {
-            return m_position;
+            return _position;
         }
         set
         {
-            m_position = value;
+            _position = value;
         }
     }
 
@@ -61,13 +66,13 @@ public class Transform
     {
         get
         {
-            return m_rotation;
+            return _rotation;
         }
         set
         {
-            m_rotation.X = MathHelper.DegreesToRadians(value.X);
-            m_rotation.Y = MathHelper.DegreesToRadians(value.Y);
-            m_rotation.Z = MathHelper.DegreesToRadians(value.Z);
+            _rotation.X = MathHelper.DegreesToRadians(value.X);
+            _rotation.Y = MathHelper.DegreesToRadians(value.Y);
+            _rotation.Z = MathHelper.DegreesToRadians(value.Z);
         }
     }
 
@@ -78,11 +83,11 @@ public class Transform
     {
         get
         {
-            return m_scale;
+            return _scale;
         }
         set
         {
-            m_scale = value;
+            _scale = value;
         }
     }
 
@@ -93,13 +98,46 @@ public class Transform
     {
         get
         {
-            m_model =
+            _model =
                 Matrix4.CreateScale(Scale) *
                 Matrix4.CreateRotationX(Rotation.X) *
                 Matrix4.CreateRotationY(Rotation.Y) *
                 Matrix4.CreateRotationZ(Rotation.Z) *
                 Matrix4.CreateTranslation(Position);
-            return m_model;
+            return _model;
         }
+    }
+
+    public static Transform operator +(Transform left, Transform right)
+    {
+        Transform t = new Transform();
+        t.Position = left.Position + right.Position;
+        t.Rotation = left.Rotation + right.Rotation;
+        t.Scale = left.Scale + right.Scale;
+        t._model = left._model + right._model;
+
+        return t;
+    }
+
+    public static Transform operator -(Transform left, Transform right)
+    {
+        Transform t = new Transform();
+        t.Position = left.Position - right.Position;
+        t.Rotation = left.Rotation - right.Rotation;
+        t.Scale = left.Scale - right.Scale;
+        t._model = left._model - right._model;
+
+        return t;
+    }
+
+    public static Transform operator *(Transform left, Transform right)
+    {
+        Transform t = new Transform();
+        t.Position = left.Position * right.Position;
+        t.Rotation = left.Rotation * right.Rotation;
+        t.Scale = left.Scale * right.Scale;
+        t._model = left._model * right._model;
+
+        return t;
     }
 }

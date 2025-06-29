@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 /// <summary>
 /// The VBO in a simplified matter. Put any type of data in this sub container.
@@ -12,7 +13,7 @@ public class VertexBuffer : IDisposable
     // Vertex Buffer Data
     private BufferTarget _target;
     private int _index;
-    private bool _signed = false;
+    private bool _built = false;
 
     ~VertexBuffer()
     {
@@ -26,9 +27,8 @@ public class VertexBuffer : IDisposable
     {
         if (!_disposedValue)
         {
-            Disable();
+            End();
             Clear();
-            GL.DeleteBuffer(_handle);
             Utils.Log("Vertex Buffer has been Disposed", ConsoleColor.DarkGray);
 
             _disposedValue = true;
@@ -39,12 +39,12 @@ public class VertexBuffer : IDisposable
     /// [CHAINED METHOD] Creates a starting point for the VBO.
     /// </summary>
     /// <param name="target">Your Buffer target for the VBO.</param>
-    public VertexBuffer Define(BufferTarget target)
+    public VertexBuffer Prepare(BufferTarget target)
     {
         _target = target;
         _handle = GL.GenBuffer();
         GL.BindBuffer(_target, _handle);
-        _signed = false;
+        _built = false;
         return this;
     }
 
@@ -93,21 +93,21 @@ public class VertexBuffer : IDisposable
     /// <param name="normalized">Is it all normalized?</param>
     /// <param name="stride">Stride of the data.</param>
     /// <param name="offset">Offset of the data..</param>
-    public VertexBuffer Sign(int index, int size, VertexAttribPointerType type, bool normalized, int stride, int offset)
+    public VertexBuffer Build(int index, int size, VertexAttribPointerType type, bool normalized, int stride, int offset)
     {
         _index = index;
         GL.VertexAttribPointer(_index, size, type, normalized, stride, offset);
         GL.EnableVertexAttribArray(_index);
-        _signed = true;
+        _built = true;
         return this;
     }
 
     /// <summary>
     /// [CHAINED METHOD] Enables the VBO attribute pointer, hinting ready to use. (THIS IS ALL CALLED AUTOMATICALLY WITHIN 'Vertex Book')
     /// </summary>
-    public VertexBuffer Enable()
+    public VertexBuffer Begin()
     {
-        if (!_signed) return this;
+        if (!_built) return this;
 
         GL.EnableVertexAttribArray(_index);
         return this;
@@ -116,9 +116,9 @@ public class VertexBuffer : IDisposable
     /// <summary>
     /// [CHAINED METHOD] Disables the VBO attribute pointer, right after the drawcall making place for other VAO. (THIS IS ALL CALLED AUTOMATICALLY WITHIN 'Vertex Book')
     /// </summary>
-    public VertexBuffer Disable()
+    public VertexBuffer End()
     {
-        if (!_signed) return this;
+        if (!_built) return this;
 
         GL.DisableVertexAttribArray(_index);
         return this;

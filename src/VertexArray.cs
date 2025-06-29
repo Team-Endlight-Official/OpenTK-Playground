@@ -4,14 +4,15 @@ using System;
 /// <summary>
 /// The VAO in a simplified matter. You can define countless of Vertex Buffers and tends to be more readable and friendlier to work with!
 /// </summary>
-public class VertexBook : IDisposable
+public class VertexArray : IDisposable
 {
     private bool _disposedValue = false;
+    private bool _built = false;
 
     private int _handle = -1;
     private List<VertexBuffer> _vertexBuffers;
 
-    ~VertexBook()
+    ~VertexArray()
     {
         if (!_disposedValue)
         {
@@ -32,6 +33,7 @@ public class VertexBook : IDisposable
 
             GL.DeleteVertexArray(_handle);
 
+            _built = false;
             _disposedValue = true;
         }
     }
@@ -39,12 +41,13 @@ public class VertexBook : IDisposable
     /// <summary>
     /// Creates the starting point for the VAO.
     /// </summary>
-    public void Define()
+    public void Prepare()
     {
         _handle = GL.GenVertexArray();
         GL.BindVertexArray(_handle);
 
         _vertexBuffers = new List<VertexBuffer>();
+        _built = false;
     }
 
     /// <summary>
@@ -67,15 +70,9 @@ public class VertexBook : IDisposable
     {
         // get all defined Vertex Buffers and build/create them.
         if (_vertexBuffers.Count <= 0) throw new ArgumentNullException("There are no VBO's defined in this Vertex Book.");
-        
-        /*
-        for (int i = 0; i++ < _vertexBuffers.Count; i++)
-        {
-            _vertexBuffers[i].Build();
-        }
-        */
 
         GL.BindVertexArray(0);
+        _built = true;
     }
 
     /// <summary>
@@ -83,10 +80,12 @@ public class VertexBook : IDisposable
     /// </summary>
     public void Begin()
     {
+        if (!_built) throw new Exception("This VAO has not been built!");
+
         GL.BindVertexArray(_handle);
         foreach (VertexBuffer buffer in _vertexBuffers)
         {
-            buffer.Enable();
+            buffer.Begin();
         }
     }
 
@@ -95,9 +94,11 @@ public class VertexBook : IDisposable
     /// </summary>
     public void End()
     {
+        if (!_built) throw new Exception("This VAO has not been built!");
+
         foreach (VertexBuffer buffer in _vertexBuffers)
         {
-            buffer.Disable();
+            buffer.End();
         }
         GL.BindVertexArray(0);
     }

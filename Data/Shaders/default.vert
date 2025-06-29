@@ -13,6 +13,7 @@ out vec2 _UV;
 void main()
 {
 	gl_Position = u_proj * u_view * u_model * vec4(POS, 1.0);
+
 	_POS = POS;
 	_UV = UV;
 }

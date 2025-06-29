@@ -18,12 +18,20 @@ public abstract class WindowActivity
     /// <summary>
     /// The Aspect ratio of the Context.
     /// </summary>
-    protected float AspectRatio
+    public float AspectRatio
     {
         get
         {
             if (Context != null) return Context.AspectRatio;
             return 0f;
+        }
+    }
+
+    public Window Window
+    {
+        get
+        {
+            return Context;
         }
     }
 
